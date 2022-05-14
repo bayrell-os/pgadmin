@@ -1,0 +1,65 @@
+<?xml version="1.1" encoding="UTF-8" ?>
+<template>
+	<uid>org.bayrell.pgadmin4</uid>
+	<name>pgAdmin 4</name>
+	<version>6.9-1</version>
+	<date>2022-05-14T19:38:00+06:00</date>
+	<maintainer>Ildar &lt;ildar@bayrell.org&gt;</maintainer>
+	<marketplace>https://cloud.bayrell.org/</marketplace>
+	<xml name="bayrell.org">https://cloud.bayrell.org/marketplace/org.bayrell.pgadmin4.xml</xml>
+	<xml name="github.com">https://raw.githubusercontent.com/bayrell-os/pgadmin4/main/org.bayrell.pgadmin4.xml</xml>
+	<link name="Docker image">https://hub.docker.com/r/bayrell/pgadmin4</link>
+	<link name="Source code">https://github.com/bayrell-os/pgadmin4</link>
+	<link name="Marketplace">https://cloud.bayrell.org/ru/marketplace/app/org.bayrell.postgres</link>
+	<license>GNU GPL 2+</license>
+	<arch>amd64</arch>
+	<arch>arm64v8</arch>
+	<yaml>
+		<services>
+			<_var_app_name_>
+				<image>bayrell/pgadmin4:6.9-1-20220514_132149</image>
+				<hostname>{{.Service.Name}}.{{.Task.ID}}.local</hostname>
+				<environment>
+					<PGADMIN_SETUP_EMAIL>_var_pgadmin_email_</PGADMIN_SETUP_EMAIL>
+					<PGADMIN_SETUP_PASSWORD>_var_pgadmin_password_</PGADMIN_SETUP_PASSWORD>
+				</environment>
+				<volumes>_var_app_name_:/data</volumes>
+			</_var_app_name_>
+		</services>
+		<volumes>
+			<_var_app_name_ />
+		</volumes>
+	</yaml>
+	<variables>
+		<variable>
+			<name>_var_pgadmin_email_</name>
+			<label>pgAdmin email</label>
+			<type>string</type>
+		</variable>
+		<variable>
+			<name>_var_pgadmin_password_</name>
+			<label>pgAdmin password</label>
+			<type>string</type>
+		</variable>
+	</variables>
+	<admin>
+		<port>81</port>
+		<nginx>
+		  location /applications/admin/_var_service_name_/ {
+				proxy_pass http://81._var_service_name_.cloud_network.example/;
+				proxy_set_header X-ROUTE-PREFIX "/applications/admin/_var_service_name_";
+				include proxy_params;
+				break;
+			}
+		</nginx>
+		<!-- #rewrite /applications/admin/_var_service_name_/(.*) /$1 break; -->
+	</admin>
+	<modificators>
+		<li>org.bayrell.modificator.cloud_os</li>
+		<li>org.bayrell.modificator.deploy_hostname</li>
+	</modificators>
+	<patch>
+		<name>Template patch</name>
+		<operations></operations>
+	</patch>
+</template>

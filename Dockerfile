@@ -5,10 +5,11 @@ ADD download /src/download
 RUN cd ~; \
 	apk update; \
 	apk upgrade; \
-	apk add python3 python3-dev py3-pip gcc musl-dev linux-headers openssl-dev libffi-dev php7-pdo_pgsql; \
+	apk add python3 python3-dev py3-pip gcc g++ musl-dev linux-headers openssl-dev libffi-dev php7-pdo_pgsql zlib-dev jpeg-dev postgresql-dev make; \
 	pip3 install --upgrade pip; \
 	pip3 install /src/download/pgadmin4-6.9-py3-none-any.whl; \
 	pip3 install uwsgi; \
+	apk del gcc g++ musl-dev linux-headers openssl-dev libffi-dev php7-pdo_pgsql zlib-dev jpeg-dev postgresql-dev make; \
 	rm -rf /src/download; \
 	rm -rf /var/cache/apk/*; \
 	echo 'Ok'

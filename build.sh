@@ -24,6 +24,10 @@ case "$1" in
 		docker build ./ -t bayrell/$IMAGE:stage0-$TAG --file stages/stage0 --build-arg ARCH=-amd64
 	;;
 	
+	stage0-arm64v8)
+		docker build ./ -t bayrell/$IMAGE:stage0-arm64v8-$TAG --file stages/stage0 --build-arg ARCH=-arm64v8
+	;;
+	
 	test)
 		docker build ./ -t bayrell/$IMAGE:$VERSION-$SUBVERSION-$TAG --file Dockerfile --build-arg ARCH=-amd64
 	;;
@@ -38,48 +42,37 @@ case "$1" in
 			--file Dockerfile --build-arg ARCH=-arm64v8
 	;;
 	
-	arm32v7)
-		docker build ./ -t bayrell/$IMAGE:$VERSION-$SUBVERSION-arm32v7 \
-			--file Dockerfile --build-arg ARCH=-arm32v7
-	;;
-	
 	manifest)
 		rm -rf ~/.docker/manifests/docker.io_bayrell_$IMAGE-*
 		
 		docker tag bayrell/$IMAGE:$VERSION-$SUBVERSION-amd64 bayrell/$IMAGE:$VERSION-amd64
 		docker tag bayrell/$IMAGE:$VERSION-$SUBVERSION-arm64v8 bayrell/$IMAGE:$VERSION-arm64v8
-		docker tag bayrell/$IMAGE:$VERSION-$SUBVERSION-arm32v7 bayrell/$IMAGE:$VERSION-arm32v7
 		
 		docker push bayrell/$IMAGE:$VERSION-$SUBVERSION-amd64
 		docker push bayrell/$IMAGE:$VERSION-$SUBVERSION-arm64v8
-		docker push bayrell/$IMAGE:$VERSION-$SUBVERSION-arm32v7
 		
 		docker push bayrell/$IMAGE:$VERSION-amd64
 		docker push bayrell/$IMAGE:$VERSION-arm64v8
-		docker push bayrell/$IMAGE:$VERSION-arm32v7
 		
 		docker manifest create bayrell/$IMAGE:$VERSION-$SUBVERSION \
 			--amend bayrell/$IMAGE:$VERSION-$SUBVERSION-amd64 \
-			--amend bayrell/$IMAGE:$VERSION-$SUBVERSION-arm64v8 \
-			--amend bayrell/$IMAGE:$VERSION-$SUBVERSION-arm32v7
+			--amend bayrell/$IMAGE:$VERSION-$SUBVERSION-arm64v8
 		docker manifest push bayrell/$IMAGE:$VERSION-$SUBVERSION
 		
 		docker manifest create bayrell/$IMAGE:$VERSION \
 			--amend bayrell/$IMAGE:$VERSION-amd64 \
-			--amend bayrell/$IMAGE:$VERSION-arm64v8 \
-			--amend bayrell/$IMAGE:$VERSION-arm32v7
+			--amend bayrell/$IMAGE:$VERSION-arm64v8
 		docker manifest push bayrell/$IMAGE:$VERSION
 	;;
 	
 	all)
 		$0 amd64
 		$0 arm64v8
-		$0 arm32v7
 		$0 manifest
 	;;
 	
 	*)
-		echo "Usage: $0 {amd64|arm64v8|arm32v7|manifest|all|test}"
+		echo "Usage: $0 {amd64|arm64v8|manifest|all|test}"
 		RETVAL=1
 
 esac
