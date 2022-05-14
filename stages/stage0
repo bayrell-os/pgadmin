@@ -1,0 +1,10 @@
+ARG ARCH=
+FROM bayrell/alpine_php_fpm:7.4-9${ARCH}
+
+ADD download /src/download
+RUN cd ~; \
+	apk update; \
+	apk upgrade; \
+	apk add python3 python3-dev py3-pip; \
+	pip3 install --upgrade pip; \
+	echo 'Ok'
