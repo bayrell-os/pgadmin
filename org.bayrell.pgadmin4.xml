@@ -17,7 +17,7 @@
 	<yaml>
 		<services>
 			<_var_app_name_>
-				<image>bayrell/pgadmin4:6.9-1-20220514_132149</image>
+				<image>bayrell/pgadmin4:6.9-1</image>
 				<hostname>{{.Service.Name}}.{{.Task.ID}}.local</hostname>
 				<environment>
 					<PGADMIN_SETUP_EMAIL>_var_pgadmin_email_</PGADMIN_SETUP_EMAIL>
